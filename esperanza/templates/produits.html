@@ -1,0 +1,232 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Raaga - Produits</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Style du header */
+        header {
+            background-color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        header img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        /* Style de la grille de produits */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .product-card {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            text-align: center;
+            padding: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .product-card h3 {
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .product-card p {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .product-card .price {
+            font-size: 18px;
+            color: #28a745;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .product-card .whatsapp-btn {
+            background-color: #25d366;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        .product-card .whatsapp-btn:hover {
+            background-color: #1ebea5;
+        }
+
+        .whatsapp-btn img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Boîte de miniatures animées */
+        .miniature-box {
+            margin: 20px auto;
+            width: 80%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .miniature {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            border-radius: 10px;
+            object-fit: cover;
+            display: none;
+        }
+
+      /* Style de la grille de produits */
+
+@media (max-width: 780px) {
+    .product-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 produits par ligne */
+    }
+    
+    .product-card img {
+        height: 150px; /* Réduit la hauteur des images */
+    }
+
+    .product-card h3 {
+        font-size: 16px; /* Ajuste la taille des titres */
+    }
+
+    .product-card p {
+        font-size: 12px; /* Réduit la taille du texte descriptif */
+    }
+
+    .product-card .price {
+        font-size: 16px; /* Ajuste la taille des prix */
+    }
+
+    .product-card .whatsapp-btn {
+        padding: 8px 15px; /* Réduit le padding du bouton */
+    }
+
+    .whatsapp-btn img {
+        width: 18px; /* Réduit la taille de l'icône */
+        height: 18px;
+    }
+}
+
+
+@media (max-width: 580px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr); /* 3 produits par ligne */
+        padding: 5px;
+    }
+    .product-card {
+            padding: 5px;
+            
+        }
+    
+    
+}
+
+
+    </style>
+</head>
+<body>
+    <!-- Header avec le logo -->
+    <header>
+        <img src="{% static 'esperanza.jpeg' %}" alt="Raaga Logo">
+    </header>
+
+    <!-- Boîte de miniatures animées -->
+    <div class="miniature-box">
+        {% for produit in produits %}
+            <img src="{{ produit.image.url }}" alt="Miniature Produit" class="miniature">
+        {% endfor %}
+    </div>
+    <div class="miniaturi-box">
+        {% for produit in produits %}
+            <img src="{{ produit.image.url }}" alt="Miniature Produit" class="miniature">
+        {% endfor %}
+    </div>
+
+    <!-- Grille de produits -->
+    <div class="product-grid">
+        {% for produit in produits %}
+            <div class="product-card">
+                <a href="{% url 'produit_detail' produit.id %}">
+                    <img src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+                </a>
+                <h3>{{ produit.nom }}</h3>
+                <p>{{ produit.description }}</p>
+                <div class="price">{{ produit.prix_commercial }} €</div>
+                <button class="whatsapp-btn" onclick="window.location.href='https://wa.me/+22657558796?text=Bonjour! Je souhaite commander le produit {{ produit.nom }}--{{ produit.prix_commercial }} fcfa est-ce Disponible ?'">
+                    <i class="fab fa-whatsapp"></i> Commander sur WhatsApp
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    
+
+    <script>
+        // Fonction JavaScript pour faire apparaître et disparaître les miniatures de manière aléatoire
+        const miniatures = document.querySelectorAll('.miniature');
+
+        function randomShow() {
+            miniatures.forEach(miniature => miniature.style.display = 'none');  // Tout cacher d'abord
+            const randomIndex = Math.floor(Math.random() * miniatures.length);
+            miniatures[randomIndex].style.display = 'block';  // Montrer une image aléatoire
+        }
+
+        setInterval(randomShow, 1000);  // Changer l'image toutes les 2 secondes
+    </script>
+    <script>
+        // Fonction JavaScript pour faire apparaître et disparaître les miniatures de manière aléatoire
+        const miniaturi = document.querySelectorAll('.miniaturi');
+
+        function randomShow() {
+            miniaturi.forEach(miniaturi => miniaturi.style.display = 'none');  // Tout cacher d'abord
+            const randomIndex = Math.floor(Math.random() * miniaturi.length);
+            miniaturi[randomIndex].style.display = 'block';  // Montrer une image aléatoire
+        }
+
+        setInterval(randomShow, 1000);  // Changer l'image toutes les 2 secondes
+    </script>
+</body>
+</html>

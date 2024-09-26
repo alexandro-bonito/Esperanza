@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détail Produit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #333;
+            margin-top: 20px;
+        }
+
+        p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        img {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+        }
+
+        /* Style du slider des produits similaires */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slider div {
+            min-width: 200px;
+            margin: 0 10px;
+            text-align: center;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .slider img {
+            max-width: 100%;
+            border-radius: 8px;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .slider h3 {
+            margin: 10px 0;
+        }
+
+        .slider p {
+            color: #28a745;
+            font-weight: bold;
+        }
+
+
+        
+        .whatsapp-btn {
+            background-color: #25d366;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background-color 0.3s ease;
+            margin-left: 35%;
+        }
+
+        .whatsapp-btn:hover {
+            background-color: #1ebea5;
+        }
+
+        .whatsapp-btn img {
+            width: 20px;
+            height: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Détail du produit vedette -->
+    <h1>{{ produit.nom }}</h1>
+    <img src="{{ produit.image.url }}" alt="{{ produit.nom }}">
+    <p>{{ produit.description }}</p>
+    <p>Prix : {{ produit.prix_commercial }} FCFA</p>
+    <p><button class="whatsapp-btn" onclick="window.location.href='https://wa.me/+22657558796?text=Bonjour! Je souhaite commander le produit {{ produit.nom }}--{{ produit.prix_commercial }} fcfa est-ce Disponible ?'">
+        <i class="fab fa-whatsapp"></i> Commander sur WhatsApp
+    </button></p>
+
+    <!-- Slider des produits similaires -->
+    <h2>Produits similaires</h2>
+    <div class="slider-container">
+        <div class="slider" id="product-slider">
+            {% for produit_similaire in produits_similaires %}
+                <div>
+                    <a href="{% url 'produit_detail' produit_similaire.id %}">
+                        <img src="{{ produit_similaire.image.url }}" alt="{{ produit_similaire.nom }}">
+                    </a>
+                    <h3>{{ produit_similaire.nom }}</h3>
+                    <p>{{ produit_similaire.prix_commercial }} FCFA</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- JavaScript pour le slider auto et infini -->
+    <script>
+        let sliderIndex = 0;
+        const slider = document.getElementById('product-slider');
+        const sliderItems = slider.children;
+        const totalItems = sliderItems.length;
+        const itemWidth = sliderItems[0].offsetWidth;
+        const sliderContainerWidth = document.querySelector('.slider-container').offsetWidth;
+
+        // Dupliquer les premiers éléments pour un effet infini
+        for (let i = 0; i < totalItems; i++) {
+            const clone = sliderItems[i].cloneNode(true);
+            slider.appendChild(clone);
+        }
+
+        function autoSlide() {
+            sliderIndex++;
+            if (sliderIndex >= totalItems) {
+                sliderIndex = 0;
+                slider.style.transition = 'none';
+                slider.style.transform = `translateX(0px)`;
+                setTimeout(() => {
+                    slider.style.transition = 'transform 0.5s ease-in-out';
+                }, 50);
+            }
+            slider.style.transform = `translateX(-${sliderIndex * itemWidth}px)`;
+        }
+
+        // Lancer le slider automatique toutes les 2 secondes
+        setInterval(autoSlide, 2000);
+    </script>
+
+</body>
+</html>

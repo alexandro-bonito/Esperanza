@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord</title>
+</head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2 {
+            color: #333;
+            font-weight: bold;
+        }
+
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        form input, form select, form button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        form button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        form button:hover {
+            background-color: #218838;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table td {
+            word-wrap: break-word;
+        }
+    </style>
+
+<body>
+    <h1>Tableau de Bord</h1>
+
+    <h2>Ajouter une catégorie</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="categorie_nom" placeholder="Nom de la catégorie" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Ajouter un pays</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="pays_nom" placeholder="Nom du pays" required>
+        <input type="text" name="pays_code" placeholder="Code du pays" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Ajouter un produit</h2>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Formulaire pour ajouter un produit -->
+        <input type="text" name="produit_nom" placeholder="Nom du produit" required>
+        <input type="text" name="produit_description" placeholder="Description">
+        <input type="number" name="produit_prix_commercial" placeholder="Prix commercial" required>
+        <input type="number" name="produit_prix_partenaire" placeholder="Prix partenaire">
+        <input type="text" name="produit_couleur" placeholder="Couleur">
+    
+        <!-- Sélection de la catégorie -->
+        <select name="produit_categorie" required>
+            <option value="">Sélectionner une catégorie</option>
+            {% for categorie in categories %}
+                <option value="{{ categorie.id }}">{{ categorie.nom }}</option>
+            {% endfor %}
+        </select>
+    
+        <!-- Sélection du pays (facultatif) -->
+        <select name="produit_pays">
+            <option value="">Sélectionner un pays</option>
+            {% for p in pays %}
+                <option value="{{ p.id }}">{{ p.nom }}</option>
+            {% endfor %}
+        </select>
+    
+        <!-- Téléchargement de l'image -->
+        <input type="file" name="image">
+        
+        <button type="submit">Ajouter le produit</button>
+    </form>
+    
+    
+
+    <h2>Ajouter un profil</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <input type="text" name="profil_username" placeholder="Nom d'utilisateur" required>
+        <input type="text" name="profil_whatsapp" placeholder="Numéro WhatsApp" required>
+        <button type="submit">Ajouter</button>
+    </form>
+
+    <h2>Liste des catégories</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categorie in categories %}
+                <tr>
+                    <td>{{ categorie.nom }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Liste des pays</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pays %}
+                <tr>
+                    <td>{{ p.nom }}</td>
+                    <td>{{ p.code }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Liste des produits</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix commercial</th>
+                <th>Prix partenaire</th>
+                <th>Couleur</th>
+                <th>Catégorie</th>
+                <th>Pays</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produit in produits %}
+                <tr>
+                    <td>{{ produit.nom }}</td>
+                    <td>{{ produit.description }}</td>
+                    <td>{{ produit.prix_commercial }}</td>
+                    <td>{{ produit.prix_partenaire }}</td>
+                    <td>{{ produit.couleur }}</td>
+                    <td>{{ produit.categorie.nom }}</td>
+                    <td>{{ produit.pays.nom }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Liste des profils</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nom d'utilisateur</th>
+                <th>Numéro WhatsApp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for profil in profils %}
+                <tr>
+                    <td>{{ profil.username }}</td>
+                    <td>{{ profil.numero_whatsapp }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
